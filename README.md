@@ -1,10 +1,9 @@
-# 📁 dirx
+# 📁 vtreex
 
 A fast and colorful Rust CLI tool to print directory trees — like `tree`, but better.  
 Includes stats, ignore filters, text export, and human-readable performance timing.
 
-![2025-06-20-132200_hyprshot](https://github.com/user-attachments/assets/95542d23-9420-4071-b605-8bc54e2ffce5)
-
+![2025-06-20-134204_hyprshot](https://github.com/user-attachments/assets/cd591ad3-02b5-4843-b762-07130fbf69cc)
 
 ---
 
@@ -33,11 +32,16 @@ rustc --version
 cargo --version
 ```
 
+## Install from crates.io
+```bash
+cargo install vtreex
+```
+
 ### Build from source
 
 ```bash
-git clone https://github.com/07calc/dirx.git
-cd dirx
+git clone https://github.com/07calc/vtreex.git
+cd vtreex
 cargo build --release
 cargo install --path .
 ```
@@ -45,23 +49,23 @@ cargo install --path .
 ## 📂 Examples
 ### Basic usage
 ```bash
-dirX ${path} ( . by default)
+vtreex ${path} ( . by default)
 ```
 ### Limit depth
 ```bash
-dirX -d 3
+vtreex -d 3
 ```
 ### show stats
 ```bash
-dirX --stats
+vtreex --stats
 ```
 ### Output to a file
 ```bash
-dirX --output tree.txt
+vtreex --output tree.txt
 ```
 Include ignored folders (e.g., .git)
 ```bash
-dirx --include .git
+vtreex --include .git
 ```
 
 ### 📊 Sample Output
