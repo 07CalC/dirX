@@ -3,6 +3,7 @@ use colored::*;
 use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
+use std::time::Duration;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -34,6 +35,18 @@ struct Stats {
     dir_count: usize,
     total_size: u64,
 }
+fn format_duration(dur: Duration) -> String {
+    let micros = dur.as_micros();
+
+    if micros >= 1_000_000 {
+        format!("{:.2}s", micros as f64 / 1_000_000.0)
+    } else if micros >= 1_000 {
+        format!("{:.2}ms", micros as f64 / 1_000.0)
+    } else {
+        format!("{}μs", micros)
+    }
+}
+
 fn is_ignored(
     name: &str,
     show_all: bool,
@@ -81,6 +94,7 @@ fn is_ignored(
 }
 
 fn main() -> io::Result<()> {
+    let now = std::time::Instant::now();
     let args = Args::parse();
     let root = &args.path;
 
@@ -115,6 +129,10 @@ fn main() -> io::Result<()> {
             format_size(stats.total_size, DECIMAL)
         );
     }
+    let elapsed = now.elapsed();
+    let human_readable = format_duration(elapsed);
+
+    println!("\n⏱️ Processed in {}", human_readable);
     Ok(())
 }
 
