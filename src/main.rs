@@ -24,8 +24,16 @@ struct Args {
 
     #[arg(long, value_name = "FILE")]
     output: Option<PathBuf>,
-}
 
+    #[arg(long)]
+    stats: bool,
+}
+#[derive(Default)]
+struct Stats {
+    file_count: usize,
+    dir_count: usize,
+    total_size: u64,
+}
 fn is_ignored(
     name: &str,
     show_all: bool,
@@ -83,17 +91,30 @@ fn main() -> io::Result<()> {
 
     writeln!(output, "{}", root.display())?;
 
+    let mut stats = Stats::default();
+    let stats_opt = if args.stats { Some(&mut stats) } else { None };
+
     print_tree(
         &mut output,
-        root,
+        &args.path,
         "".to_string(),
         0,
         args.depth.unwrap_or(usize::MAX),
         args.show_all,
         &args.ignore,
         &args.include,
+        stats_opt,
     )?;
 
+    if args.stats {
+        use humansize::{DECIMAL, format_size};
+        println!(
+            "\n📁 {} directories, 📄 {} files\n📦 Total size: {}",
+            stats.dir_count,
+            stats.file_count,
+            format_size(stats.total_size, DECIMAL)
+        );
+    }
     Ok(())
 }
 
@@ -106,6 +127,7 @@ fn print_tree<W: Write>(
     show_all: bool,
     custom_ignores: &[String],
     force_includes: &[String],
+    mut stats: Option<&mut Stats>,
 ) -> io::Result<()> {
     if level >= max_depth {
         return Ok(());
@@ -125,9 +147,19 @@ fn print_tree<W: Write>(
     entries.sort_by_key(|e| e.path());
     let total = entries.len();
 
+    let stats_ref = &mut stats;
     for (i, entry) in entries.into_iter().enumerate() {
         let path = entry.path();
         let is_dir = path.is_dir();
+
+        if let Some(s) = stats_ref {
+            if path.is_dir() {
+                s.dir_count += 1;
+            } else if let Ok(meta) = path.metadata() {
+                s.file_count += 1;
+                s.total_size += meta.len();
+            }
+        }
 
         let file_name = path
             .file_name()
@@ -168,6 +200,7 @@ fn print_tree<W: Write>(
                 show_all,
                 custom_ignores,
                 force_includes,
+                stats_ref.as_deref_mut(),
             )?;
         }
     }
