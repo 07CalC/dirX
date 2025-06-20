@@ -2,6 +2,14 @@
 name = "dirX"
 version = "0.1.0"
 edition = "2024"
+authors = ["CalC maheshwarivinayak90@gmail.com"]
+description = "A fast, colorful directory tree viewer written in Rust."
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/07calc/dirx"
+keywords = ["tree", "directory", "cli", "filesystem"]
+categories = ["command-line-utilities"]
+exclude = ["/.github", "/target", "*.gif"]
 
 [dependencies]
 clap = { version = "4.5.40", features = ["derive"] }
