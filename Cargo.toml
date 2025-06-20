@@ -1,5 +1,5 @@
 [package]
-name = "dirX"
+name = "dirX-cli"
 version = "0.1.0"
 edition = "2024"
 authors = ["CalC maheshwarivinayak90@gmail.com"]
